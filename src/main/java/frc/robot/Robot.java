@@ -2,20 +2,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 
-import java.util.Map;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.wpilibj.XboxController;
 
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Commands.Auton;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
-import edu.wpi.first.networktables.GenericEntry;
 
 public class Robot extends TimedRobot {
   // The football robot drivetrain is a modified mecanum drive with
@@ -75,10 +68,10 @@ public class Robot extends TimedRobot {
   if (x >= .9){x = .9;}
   
     //x, y, and rotation
-    wheelSpeeds[1] = -x + y + -rotation;
-    wheelSpeeds[2] = x + -y + -rotation;
-    wheelSpeeds[3] = x + y + -rotation;
-    wheelSpeeds[4] = -x + -y + -rotation;
+    wheelSpeeds[1] = x + y + -rotation;
+    wheelSpeeds[2] = -x + -y + -rotation;
+    wheelSpeeds[3] = -x + y + -rotation;
+    wheelSpeeds[4] = x + -y + -rotation;
 
 
    normalize(wheelSpeeds);

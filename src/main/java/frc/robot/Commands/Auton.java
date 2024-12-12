@@ -1,16 +1,5 @@
 package frc.robot.Commands;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-
-import java.util.Map;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
-import edu.wpi.first.wpilibj.XboxController;
-
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Robot;
 import frc.robot.Subsystems.Elevator;
@@ -23,7 +12,7 @@ public class Auton {
   private final Robot m_Robot;
 
     
-    private GenericEntry m_autonSelect;
+  private GenericEntry m_autonSelect;
   private long m_startTime;
 
 public Auton(Intake intake, Elevator elevator, Robot robot) {
@@ -33,7 +22,7 @@ public Auton(Intake intake, Elevator elevator, Robot robot) {
 }
 
 public void SystemInit(){
-     m_autonSelect = Shuffleboard.getTab("Auton Select")
+     m_autonSelect = Shuffleboard.getTab("Constants")
         .add("Auton Choose", 0)
         .getEntry();
 }

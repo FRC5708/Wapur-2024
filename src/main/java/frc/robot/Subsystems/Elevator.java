@@ -1,23 +1,23 @@
 package frc.robot.Subsystems;
 
-import edu.wpi.first.wpilibj.TimedRobot;
-
-import java.util.Map;
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.XboxController;
-
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.GenericEntry;
 
 public class Elevator{
+private DigitalInput bottemSensor = new DigitalInput(0);
+private DigitalInput topSensor = new DigitalInput(1);
+    
 private final TalonSRX m_highMotor = new TalonSRX (18);
 private final TalonSRX m_lowMotor = new TalonSRX (19);
+
+private GenericEntry m_upPower;
+private GenericEntry m_downPower;
+private GenericEntry m_holdPower;
 
 private final XboxController m_stick;
 
@@ -28,14 +28,28 @@ public Elevator(XboxController stick){
 }
 
 public void ElevatorInit(){
+    m_upPower = Shuffleboard.getTab("Constants")
+        .add("Elevator Up Power", .5)
+        .getEntry();
+
+    m_downPower = Shuffleboard.getTab("Constants")
+        .add("Elevator Down Power", -.5)
+        .getEntry();
+
+    m_holdPower = Shuffleboard.getTab("Constants")
+        .add("Elevator Stable Power", 0)
+        .getEntry();
 }
 
 public void ElevatorPeriodic(){
-if (m_stick.getRightBumper()){
+if (m_stick.getYButton()){
     ElevatorUp();
 }
-else if(m_stick.getLeftBumper()){
+else if(m_stick.getAButton()){
     ElevatorDown();
+}
+else if(m_stick.getBButton()){
+    ElevatorHold();
 }
 else {
     ElevatorSet();
@@ -43,17 +57,51 @@ else {
 }
 
 public void ElevatorUp(){
-     m_highMotor.set(ControlMode.PercentOutput, -.35);
-    m_lowMotor.set(ControlMode.PercentOutput, -.35);
+    int upPower = (int) m_upPower.getInteger(1);
+    if (getTopSensor()){
+        m_highMotor.set(ControlMode.PercentOutput, upPower);
+        m_lowMotor.set(ControlMode.PercentOutput, upPower);
+        System.out.println(upPower);
+    }
+    else {
+        System.out.println("Too high, can't go further");
+        m_highMotor.set(ControlMode.PercentOutput, 0);
+        m_lowMotor.set(ControlMode.PercentOutput, 0);
+    }
 }
 
 public void ElevatorDown(){
-    m_highMotor.set(ControlMode.PercentOutput, .35);
-    m_lowMotor.set(ControlMode.PercentOutput, .35);
+    int downPower = (int) m_downPower.getInteger(1);
+    if (getBottemSensor()){
+        m_highMotor.set(ControlMode.PercentOutput, -downPower);
+        m_lowMotor.set(ControlMode.PercentOutput, -downPower);
+        System.out.println(downPower);
+    }
+    else {
+        System.out.println("Too low, can't go lower");
+        m_highMotor.set(ControlMode.PercentOutput, 0);
+        m_lowMotor.set(ControlMode.PercentOutput, 0);
+    }
 }
 
+public void ElevatorHold(){
+    int holdPower = (int) m_holdPower.getInteger(1);
+    m_highMotor.set(ControlMode.PercentOutput, holdPower);
+    m_lowMotor.set(ControlMode.PercentOutput, holdPower);
+    System.out.println(holdPower);
+}
 public void ElevatorSet(){
     m_highMotor.set(ControlMode.PercentOutput, 0);
     m_lowMotor.set(ControlMode.PercentOutput, 0);
 }
+
+
+public boolean getTopSensor() {
+    return bottemSensor.get();
+  }
+
+  public boolean getBottemSensor() {
+    return topSensor.get();
+  }
+
 }
