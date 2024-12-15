@@ -30,7 +30,7 @@ public Intake(XboxController stick){
 
 public void IntakeInit(){
     m_inPower = Shuffleboard.getTab("Constants")
-    .add("Intake In Power", .7)
+    .add("Intake In Power", 1)
     .getEntry();
 
     m_outPower = Shuffleboard.getTab("Constants")
@@ -38,10 +38,10 @@ public void IntakeInit(){
     .getEntry();
 
     m_twistAway = Shuffleboard.getTab("Constants")
-    .add("Twist Away Power", .2)
+    .add("Twist Away Power", .6)
     .getEntry();
     m_twistTowards = Shuffleboard.getTab("Constants")
-    .add("Twist Towards Power", .2)
+    .add("Twist Towards Power", 1)
     .getEntry();
     m_twistAwayTime = Shuffleboard.getTab("Constants")
     .add("Twist Away Timing", 6)
@@ -84,10 +84,10 @@ public void crateIntakeReady(){
 }
 public void crateGather(){
     double twistPowerTowards = (double) m_twistTowards.getDouble(1);
-    double twistPowerAway = (double) m_twistTowards.getDouble(1);
+    double twistPowerAway = (double) m_twistAway.getDouble(1);
 
     int twistTimeTowards = (int) m_twistTowardsTime.getInteger(1);
-    int twistTimeAway = (int) m_twistTowardsTime.getInteger(1);
+    int twistTimeAway = (int) m_twistAwayTime.getInteger(1);
 
     twistTimeTowards *= 100;
     twistTimeAway *= 100;

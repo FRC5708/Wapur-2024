@@ -15,6 +15,7 @@ public class Robot extends TimedRobot {
   // The football robot drivetrain is a modified mecanum drive with
   // 4 independent gearboxes.
 private GenericEntry m_drivePower;
+private GenericEntry m_rotPower;
 
   private final XboxController m_stick = new XboxController(0);
   
@@ -41,9 +42,12 @@ private GenericEntry m_drivePower;
 
 
     m_drivePower = Shuffleboard.getTab("Constants")
-        .add("Drive Power", .3)
+        .add("Drive Power", .52)
         .getEntry();
-      
+    
+    m_rotPower = Shuffleboard.getTab("Constants")
+      .add("Rot Power", .85)
+      .getEntry();
    
   }
   @Override //Setting the current System Time
@@ -71,23 +75,19 @@ private GenericEntry m_drivePower;
   public void mecanumDrive_Cartesian(double x, double y, double rotation)
   {
     double drivePower = (double) m_drivePower.getDouble(1);
+    double rotPower = (double) m_rotPower.getDouble(1);
 
     double wheelSpeeds[] = new double[32];
 
-  if (x <= .3 && y <= .3){
-    x = x;
-    y = y;
-  }
-  else {
     x *= drivePower;
     y *= drivePower;
-  }
+    rotation *= rotPower;
   
     //x, y, and rotation
-    wheelSpeeds[1] = x + y + -rotation;
-    wheelSpeeds[2] = -x + -y + -rotation;
-    wheelSpeeds[3] = -x + y + -rotation;
-    wheelSpeeds[4] = x + -y + -rotation;
+    wheelSpeeds[1] = x + -y + rotation;
+    wheelSpeeds[2] = -x + y + rotation;
+    wheelSpeeds[3] = -x + -y + rotation;
+    wheelSpeeds[4] = x + y + rotation;
 
 
    normalize(wheelSpeeds);
