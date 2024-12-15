@@ -29,15 +29,15 @@ public Elevator(XboxController stick){
 
 public void ElevatorInit(){
     m_upPower = Shuffleboard.getTab("Constants")
-        .add("Elevator Up Power", .5)
+        .add("Elevator Up Power", .3)
         .getEntry();
 
     m_downPower = Shuffleboard.getTab("Constants")
-        .add("Elevator Down Power", -.5)
+        .add("Elevator Down Power", .3)
         .getEntry();
 
     m_holdPower = Shuffleboard.getTab("Constants")
-        .add("Elevator Stable Power", 0)
+        .add("Elevator Stable Power", .2)
         .getEntry();
 }
 
@@ -57,7 +57,7 @@ else {
 }
 
 public void ElevatorUp(){
-    int upPower = (int) m_upPower.getInteger(1);
+    double upPower = (double) m_upPower.getDouble(1);
     if (getTopSensor()){
         m_highMotor.set(ControlMode.PercentOutput, upPower);
         m_lowMotor.set(ControlMode.PercentOutput, upPower);
@@ -71,7 +71,7 @@ public void ElevatorUp(){
 }
 
 public void ElevatorDown(){
-    int downPower = (int) m_downPower.getInteger(1);
+    double downPower = (double) m_downPower.getDouble(1);
     if (getBottemSensor()){
         m_highMotor.set(ControlMode.PercentOutput, -downPower);
         m_lowMotor.set(ControlMode.PercentOutput, -downPower);
@@ -85,7 +85,7 @@ public void ElevatorDown(){
 }
 
 public void ElevatorHold(){
-    int holdPower = (int) m_holdPower.getInteger(1);
+    double holdPower = (double) m_holdPower.getDouble(1);
     m_highMotor.set(ControlMode.PercentOutput, holdPower);
     m_lowMotor.set(ControlMode.PercentOutput, holdPower);
     System.out.println(holdPower);
