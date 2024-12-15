@@ -15,7 +15,10 @@ private final TalonSRX m_rightIntake = new TalonSRX (6);
 
 private GenericEntry m_inPower;
 private GenericEntry m_outPower;
-private GenericEntry m_twistCratePower;
+private GenericEntry m_twistTowards;
+private GenericEntry m_twistAway;
+private GenericEntry m_twistTowardsTime;
+private GenericEntry m_twistAwayTime;
 
 private long m_intakeTime;
 
@@ -34,8 +37,17 @@ public void IntakeInit(){
     .add("Intake Out Power", .3)
     .getEntry();
 
-    m_twistCratePower = Shuffleboard.getTab("Constants")
-    .add("Twist Power", .2)
+    m_twistAway = Shuffleboard.getTab("Constants")
+    .add("Twist Away Power", .2)
+    .getEntry();
+    m_twistTowards = Shuffleboard.getTab("Constants")
+    .add("Twist Towards Power", .2)
+    .getEntry();
+    m_twistAwayTime = Shuffleboard.getTab("Constants")
+    .add("Twist Away Timing", 6)
+    .getEntry();
+    m_twistTowardsTime = Shuffleboard.getTab("Constants")
+    .add("Twist Towards Timing", 2)
     .getEntry();
 }
 
@@ -71,18 +83,27 @@ public void crateIntakeReady(){
     m_rightIntake.set(ControlMode.PercentOutput, 0);
 }
 public void crateGather(){
-    double twistPower = (double) m_twistCratePower.getDouble(1);
-    if (System.currentTimeMillis() - m_intakeTime < 600){
-    m_leftIntake.set(ControlMode.PercentOutput, -twistPower);
-    m_rightIntake.set(ControlMode.PercentOutput, twistPower);
+    double twistPowerTowards = (double) m_twistTowards.getDouble(1);
+    double twistPowerAway = (double) m_twistTowards.getDouble(1);
+
+    int twistTimeTowards = (int) m_twistTowardsTime.getInteger(1);
+    int twistTimeAway = (int) m_twistTowardsTime.getInteger(1);
+
+    twistTimeTowards *= 100;
+    twistTimeAway *= 100;
+    twistTimeAway += twistTimeTowards;
+
+    if (System.currentTimeMillis() - m_intakeTime < twistTimeTowards){
+    m_leftIntake.set(ControlMode.PercentOutput, -twistPowerTowards);
+    m_rightIntake.set(ControlMode.PercentOutput, twistPowerTowards);
     }
-    else if (System.currentTimeMillis() - m_intakeTime < 800){
-    m_leftIntake.set(ControlMode.PercentOutput, twistPower);
-    m_rightIntake.set(ControlMode.PercentOutput, twistPower);  
+    else if (System.currentTimeMillis() - m_intakeTime < twistTimeAway){
+    m_leftIntake.set(ControlMode.PercentOutput, twistPowerAway);
+    m_rightIntake.set(ControlMode.PercentOutput, twistPowerAway);  
     }
     else {
-    m_leftIntake.set(ControlMode.PercentOutput, -twistPower);
-    m_rightIntake.set(ControlMode.PercentOutput, twistPower);
+    m_leftIntake.set(ControlMode.PercentOutput, -twistPowerTowards);
+    m_rightIntake.set(ControlMode.PercentOutput, twistPowerTowards);
     m_intakeTime = System.currentTimeMillis();
     }
 }

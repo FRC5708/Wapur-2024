@@ -1,11 +1,12 @@
 package frc.robot;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.TimedRobot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.Commands.Auton;
 import frc.robot.Subsystems.Elevator;
 import frc.robot.Subsystems.Intake;
@@ -13,6 +14,7 @@ import frc.robot.Subsystems.Intake;
 public class Robot extends TimedRobot {
   // The football robot drivetrain is a modified mecanum drive with
   // 4 independent gearboxes.
+private GenericEntry m_drivePower;
 
   private final XboxController m_stick = new XboxController(0);
   
@@ -36,6 +38,11 @@ public class Robot extends TimedRobot {
     m_frontRightMotor.set(ControlMode.PercentOutput, 0);
     m_backLeftMotor.set(ControlMode.PercentOutput, 0);
     m_backRightMotor.set(ControlMode.PercentOutput, 0);
+
+
+    m_drivePower = Shuffleboard.getTab("Constants")
+        .add("Drive Power", .3)
+        .getEntry();
       
    
   }
@@ -63,9 +70,18 @@ public class Robot extends TimedRobot {
 
   public void mecanumDrive_Cartesian(double x, double y, double rotation)
   {
+    double drivePower = (double) m_drivePower.getDouble(1);
+
     double wheelSpeeds[] = new double[32];
 
-  if (x >= .9){x = .9;}
+  if (x <= .3 && y <= .3){
+    x = x;
+    y = y;
+  }
+  else {
+    x *= drivePower;
+    y *= drivePower;
+  }
   
     //x, y, and rotation
     wheelSpeeds[1] = x + y + -rotation;
